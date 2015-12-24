@@ -8,9 +8,9 @@ def process():
     parser = ArgumentParser(description = "Generate graph of green spaces between tho given locations")
 
 
-    parser.add_argument('--start' )
-    parser.add_argument('--finish')
-    parser.add_argument('--nr_steps')
+    parser.add_argument('start' )
+    parser.add_argument('finish')
+    parser.add_argument('nr_steps')
     arguments = parser.parse_args()
 
     plt.plot(Greengraph(arguments.start ,arguments.finish).green_between(arguments.nr_steps))
