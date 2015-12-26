@@ -11,11 +11,20 @@ def process():
     parser.add_argument('--start', help="starting point" , default = 'London')
     parser.add_argument('--finish', help = 'end point', default = 'Oxford')
     parser.add_argument('--nr_steps', help = 'nr points in between', type=int, default = 10 )
+    parser.add_argument('--output', help = 'file into which to save the plot')
     arguments = parser.parse_args()
 
     plt.close()
-    plt.plot(Greengraph(arguments.start ,arguments.finish).green_between(arguments.nr_steps))
+    figure = plt.figure()
+    figure_axes = figure.add_subplot(1,1,1)
+    figure_axes.plot(Greengraph(arguments.start ,arguments.finish).green_between(arguments.nr_steps))
+    if arguments.output:
+        figure.savefig(arguments.output)
+
     plt.show()
+
+
+
 
 if __name__ == "__main__":
     process()
