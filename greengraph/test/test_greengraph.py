@@ -35,8 +35,32 @@ def test_location_sequence():
         assert g.location_sequence([2,3], [10, 20], -5)
     assert_equal(len(g.location_sequence([0, 1], [-10, 34], 10)),10)
 
+from mock import patch
+
 def test_green_between():
     g = G.Greengraph('London','Oxford');
     with assert_raises(TypeError):
         assert g.green_between()
-    
+    with assert_raises(ValueError):
+        assert g.green_between(-5)
+        assert g.green_between(0)
+    with patch.object(G.Map, 'count_green') as mock_count_green:
+        g.green_between(1)
+        mock_count_green.assert_called_once_with()
+
+#import requests
+
+#def test_map_initialization():
+#    with patch.object(requests, 'get') as mock_get:
+#        london_map = G.Map(G.Greengraph('London','Oxford').geolocate('London')[0],G.Greengraph('London','Oxford').geolocate('London')[1])
+#        mock_get.assert_called_with("http://maps.googleapis.com/maps/api/staticmap?",params = {'sensor':'false', 'zoom':12, 'size':'400x400', 'center':'51.5073509, -0.1277583', 'style':'feature:all|element:labels|visibility:off'})
+import numpy as np
+m_london = G.Map(G.Greengraph('London','Oxford').geolocate('London')[0],G.Greengraph('London','Oxford').geolocate('London')[1])
+m_oxford = G.Map(G.Greengraph('London','Oxford').geolocate('Oxford')[0],G.Greengraph('London','Oxford').geolocate('Oxford')[1])
+
+def test_green():
+    with assert_raises(TypeError):
+        assert m_london.green()
+    with assert_raises(ValueError):
+        assert m_london.green(-4)
+    assert np.sum(m_london.green(1.1)) < np.sum(m_oxford.green(1.1))
