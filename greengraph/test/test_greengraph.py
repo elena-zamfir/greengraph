@@ -49,11 +49,42 @@ def test_green_between():
         mock_count_green.assert_called_once_with()
 
 #import requests
-
+#from Mock import MagicMock
 #def test_map_initialization():
 #    with patch.object(requests, 'get') as mock_get:
 #        london_map = G.Map(G.Greengraph('London','Oxford').geolocate('London')[0],G.Greengraph('London','Oxford').geolocate('London')[1])
 #        mock_get.assert_called_with("http://maps.googleapis.com/maps/api/staticmap?",params = {'sensor':'false', 'zoom':12, 'size':'400x400', 'center':'51.5073509, -0.1277583', 'style':'feature:all|element:labels|visibility:off'})
+
+from mock import patch
+
+import requests
+def side_effect(base, params):
+    with open('/Users/elenazamfir/elena/PhD/python_code/research_software_engineering/greengraph/greengraph/test/fixtures/request_response.yaml','r') as source:
+        return yaml.load(source)
+long = 0
+lat = 51
+satellite=True
+zoom=10
+size=(400,400)
+sensor=False
+satellite = True
+base="http://maps.googleapis.com/maps/api/staticmap?"
+params=dict(
+            sensor= str(sensor).lower(),
+            zoom= zoom,
+            size= "x".join(map(str, size)),
+            center= ",".join(map(str, (lat, long) )),
+            style="feature:all|element:labels|visibility:off")
+params["maptype"]="satellite"
+@patch.object(requests, 'get')
+def test_map_creation( mock_get):
+    mock_get.side_effect = side_effect
+    G.Map(51,0)
+    mock_get.assert_called_with(base, params=params)
+
+mock_get = test_map_creation()
+
+
 import numpy as np
 m_london = G.Map(G.Greengraph('London','Oxford').geolocate('London')[0],G.Greengraph('London','Oxford').geolocate('London')[1])
 m_oxford = G.Map(G.Greengraph('London','Oxford').geolocate('Oxford')[0],G.Greengraph('London','Oxford').geolocate('Oxford')[1])
